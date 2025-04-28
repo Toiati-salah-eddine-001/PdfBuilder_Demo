@@ -77,7 +77,7 @@ const fetchImageUrlFromGoogle = require('./fetchImageUrlFromGoogle');
 async function createPDF() {
   const pdf = new PDFBuilder('WorldWide.pdf');
 
-  const imageUrl = await fetchImageUrlFromGoogle('dog');
+  const imageUrl = await fetchImageUrlFromGoogle('snack');
 
   const content = [
     { type: 'h1', text: 'مرحبا بك في PDF Kit' },
@@ -114,7 +114,7 @@ async function createPDF() {
   ];
 
   if (imageUrl) {
-    content.push({ type: 'image', path: imageUrl, width: 150, height: 150 });
+    content.push({ type: 'image', path: imageUrl, width: 150, height: 150 ,block: true});
   }
 
   await pdf.renderContent(content);

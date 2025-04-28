@@ -479,7 +479,7 @@ class PDFBuilder {
   
       if (block) {
         this.doc.image(imageSource, x, y, { width, height });
-        this.doc.moveDown(2);
+        this.doc.moveDown(5);
       } else {
         this.doc.image(imageSource, x, y, { width, height });
       }
@@ -498,7 +498,7 @@ class PDFBuilder {
     const height = options.height || 300;
 
     this.doc.image(chartImageBuffer, x, y, { width, height });
-    this.doc.moveDown();
+    this.doc.moveDown(20);
   }
 
 
