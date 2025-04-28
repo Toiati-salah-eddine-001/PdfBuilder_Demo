@@ -245,6 +245,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const axios = require('axios');
+const createChart = require('./createChart'); 
 
 class PDFBuilder {
   constructor(outputPath, fontPath = './Amiri-Regular.ttf') {
@@ -273,11 +274,9 @@ class PDFBuilder {
         case 'image':
           await this.addImage(item);
           break;
-          
           case 'chart':
-            this.addChart(item);
+            await this.addChart(item);
             break;
-          
         default:
           console.log(`Type ${item.type} not supported.`);
       }
@@ -346,7 +345,7 @@ class PDFBuilder {
     } catch (error) {
       console.error('Error handling image:', error.message);
     }
-  }
+  };
 
   ///diagrames :
   // addBarChart(data, options = {}) {
@@ -397,95 +396,107 @@ class PDFBuilder {
 
   //   this.doc.moveDown(4);
   // }
+  // async addChart({ data, options = {} }) {
+  //   const { x = 50, y = this.doc.y, width = 400, height = 300, userColor = 'blue', revenueColor = 'orange' } = options;
+  
+  //   const chartX = x;
+  //   const chartY = y;
+  //   const chartWidth = width;
+  //   const chartHeight = height;
+  
+  //   const labels = data.map(item => item.label);
+  //   const users = data.map(item => item.users);
+  //   const revenues = data.map(item => item.revenue);
+  
+  //   const maxYValue = Math.max(...users, ...revenues);
+  
+  //   const barWidth = chartWidth / (labels.length * 3);
+  //   const spacing = barWidth;
+  
+  //   let currentX = chartX;
+  
+  //   // رسم الأعمدة
+  //   labels.forEach((label, index) => {
+  //     const userHeight = (users[index] / maxYValue) * chartHeight;
+  //     const revenueHeight = (revenues[index] / maxYValue) * chartHeight;
+  
+  //     // عمود المستخدمين
+  //     this.doc
+  //       .fillColor(userColor)
+  //       .rect(currentX, chartY + chartHeight - userHeight, barWidth, userHeight)
+  //       .fill();
+  
+  //     // عمود الإيرادات
+  //     this.doc
+  //       .fillColor(revenueColor)
+  //       .rect(currentX + barWidth + spacing, chartY + chartHeight - revenueHeight, barWidth, revenueHeight)
+  //       .fill();
+  
+  //     // كتابة اسم التصنيف تحت الأعمدة
+  //     this.doc
+  //       .fillColor('black')
+  //       .fontSize(10)
+  //       .text(label, currentX, chartY + chartHeight + 5, {
+  //         width: barWidth * 2 + spacing,
+  //         align: 'center'
+  //       });
+  
+  //     currentX += (barWidth * 2) + (spacing * 2);
+  //   });
+  
+  //   // رسم المحور Y
+  //   this.doc
+  //     .moveTo(chartX - 10, chartY)
+  //     .lineTo(chartX - 10, chartY + chartHeight)
+  //     .stroke();
+  
+  //   // رسم المحور X
+  //   this.doc
+  //     .moveTo(chartX - 10, chartY + chartHeight)
+  //     .lineTo(chartX + chartWidth + 20, chartY + chartHeight)
+  //     .stroke();
+  
+  //   // عناوين المحاور
+  //   this.doc
+  //     .fontSize(12)
+  //     .fillColor('black')
+  //     .text('الزمن (الأرباع)', chartX + chartWidth / 2 - 30, chartY + chartHeight + 40);
+  
+  //   this.doc
+  //     .rotate(-90, { origin: [chartX - 40, chartY + chartHeight / 2] })
+  //     .fontSize(12)
+  //     .text('عدد المستخدمين / الإيرادات', chartX - 40, chartY + chartHeight / 2, {
+  //       align: 'center'
+  //     })
+  //     .rotate(90, { origin: [chartX - 40, chartY + chartHeight / 2] });
+  
+  //   // كتابة القيم على محور Y
+  //   const steps = 5;
+  //   for (let i = 0; i <= steps; i++) {
+  //     const value = Math.round((maxYValue / steps) * i);
+  //     const yPosition = chartY + chartHeight - (chartHeight / steps) * i;
+  
+  //     this.doc
+  //       .fontSize(8)
+  //       .fillColor('black')
+  //       .text(value.toString(), chartX - 30, yPosition - 5, { width: 20, align: 'right' });
+  //   }
+  
+  //   this.doc.moveDown();
+  // }
+
   async addChart({ data, options = {} }) {
-    const { x = 50, y = this.doc.y, width = 400, height = 300, userColor = 'blue', revenueColor = 'orange' } = options;
-  
-    const chartX = x;
-    const chartY = y;
-    const chartWidth = width;
-    const chartHeight = height;
-  
-    const labels = data.map(item => item.label);
-    const users = data.map(item => item.users);
-    const revenues = data.map(item => item.revenue);
-  
-    const maxYValue = Math.max(...users, ...revenues);
-  
-    const barWidth = chartWidth / (labels.length * 3);
-    const spacing = barWidth;
-  
-    let currentX = chartX;
-  
-    // رسم الأعمدة
-    labels.forEach((label, index) => {
-      const userHeight = (users[index] / maxYValue) * chartHeight;
-      const revenueHeight = (revenues[index] / maxYValue) * chartHeight;
-  
-      // عمود المستخدمين
-      this.doc
-        .fillColor(userColor)
-        .rect(currentX, chartY + chartHeight - userHeight, barWidth, userHeight)
-        .fill();
-  
-      // عمود الإيرادات
-      this.doc
-        .fillColor(revenueColor)
-        .rect(currentX + barWidth + spacing, chartY + chartHeight - revenueHeight, barWidth, revenueHeight)
-        .fill();
-  
-      // كتابة اسم التصنيف تحت الأعمدة
-      this.doc
-        .fillColor('black')
-        .fontSize(10)
-        .text(label, currentX, chartY + chartHeight + 5, {
-          width: barWidth * 2 + spacing,
-          align: 'center'
-        });
-  
-      currentX += (barWidth * 2) + (spacing * 2);
-    });
-  
-    // رسم المحور Y
-    this.doc
-      .moveTo(chartX - 10, chartY)
-      .lineTo(chartX - 10, chartY + chartHeight)
-      .stroke();
-  
-    // رسم المحور X
-    this.doc
-      .moveTo(chartX - 10, chartY + chartHeight)
-      .lineTo(chartX + chartWidth + 20, chartY + chartHeight)
-      .stroke();
-  
-    // عناوين المحاور
-    this.doc
-      .fontSize(12)
-      .fillColor('black')
-      .text('الزمن (الأرباع)', chartX + chartWidth / 2 - 30, chartY + chartHeight + 40);
-  
-    this.doc
-      .rotate(-90, { origin: [chartX - 40, chartY + chartHeight / 2] })
-      .fontSize(12)
-      .text('عدد المستخدمين / الإيرادات', chartX - 40, chartY + chartHeight / 2, {
-        align: 'center'
-      })
-      .rotate(90, { origin: [chartX - 40, chartY + chartHeight / 2] });
-  
-    // كتابة القيم على محور Y
-    const steps = 5;
-    for (let i = 0; i <= steps; i++) {
-      const value = Math.round((maxYValue / steps) * i);
-      const yPosition = chartY + chartHeight - (chartHeight / steps) * i;
-  
-      this.doc
-        .fontSize(8)
-        .fillColor('black')
-        .text(value.toString(), chartX - 30, yPosition - 5, { width: 20, align: 'right' });
-    }
-  
+    const chartImageBuffer = await createChart(data, options);
+
+    const x = options.x || 50;
+    const y = options.y || this.doc.y;
+    const width = options.width || 400;
+    const height = options.height || 300;
+
+    // إضافة الرسم البياني إلى الـ PDF
+    this.doc.image(chartImageBuffer, x, y, { width, height });
     this.doc.moveDown();
   }
-  
   ////
   save() {
     this.doc.end();
