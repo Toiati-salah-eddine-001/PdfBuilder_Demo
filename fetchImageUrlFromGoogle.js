@@ -85,10 +85,10 @@
 
 
 const axios = require('axios');
-
+require('dotenv').config();
 async function fetchImageUrlFromGoogle(query, retries = 3, delayMs = 5000) {
-  const apiKey = 'AIzaSyB57QlhvIhdtXBGHTukHmRn-gq3GUgmLD8';
-  const cx = '84d8ff9c383cb4ba7';
+  const apiKey = process.env.API_KEY;
+  const cx = process.env.CX;
   const searchType = 'image';
   const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}&searchType=${searchType}`;
 

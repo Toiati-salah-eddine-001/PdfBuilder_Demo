@@ -75,7 +75,7 @@ const PDFBuilder = require('./PDFBuilder');
 const fetchImageUrlFromGoogle = require('./fetchImageUrlFromGoogle');
 
 async function createPDF() {
-  const pdf = new PDFBuilder('output555555555555.pdf');
+  const pdf = new PDFBuilder('outputHello.pdf');
 
   const imageUrl = await fetchImageUrlFromGoogle('corgi');
 
@@ -83,6 +83,21 @@ async function createPDF() {
     { type: 'h1', text: 'مرحبا بك في PDF Kit' },
     { type: 'paragraph', text: 'هذه فقرة تجريبية.' },
     { type: 'image', path: './test.png', width: 100 },
+    { 
+      type: 'chart', 
+      data: [
+        { label: 'Q1', users: 300, revenue: 500 },
+        { label: 'Q2', users: 400, revenue: 700 },
+        { label: 'Q3', users: 350, revenue: 650 },
+        { label: 'Q4', users: 500, revenue: 800 },
+      ],
+      options: {
+        width: 400,
+        height: 300,
+        userColor: 'blue',
+        revenueColor: 'orange',
+      }
+    }
   ];
 
   if (imageUrl) {
