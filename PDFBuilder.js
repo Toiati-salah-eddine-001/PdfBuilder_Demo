@@ -385,7 +385,7 @@ class PDFBuilder {
     this.doc.font('ArabicFont');
   }
 
-  // دالة لعرض المحتوى
+
   async renderContent(contentArray) {
     for (const item of contentArray) {
       switch (item.type) {
@@ -413,7 +413,7 @@ class PDFBuilder {
     }
   }
 
-  // دالة لإضافة H1
+
   addH1(text, options = {}) {
     this.doc
       .fontSize(options.fontSize || 24)
@@ -422,7 +422,7 @@ class PDFBuilder {
     this.doc.moveDown();
   }
 
-  // دالة لإضافة H2
+
   addH2(text, options = {}) {
     this.doc
       .fontSize(options.fontSize || 18)
@@ -431,7 +431,7 @@ class PDFBuilder {
     this.doc.moveDown();
   }
 
-  // دالة لإضافة فقرة
+
   addParagraph(text, options = {}) {
     this.doc
       .fontSize(options.fontSize || 12)
@@ -440,7 +440,7 @@ class PDFBuilder {
     this.doc.moveDown();
   }
 
-  // دالة لإضافة جدول
+
   addTable(data, options = {}) {
     const { columnWidths = [], rowHeight = 20, borderColor = 'black' } = options;
     const margin = 50;
@@ -467,22 +467,28 @@ class PDFBuilder {
     this.doc.moveDown();
   }
 
-  // دالة لإضافة صورة
-  async addImage({ path, x = 50, y = this.doc.y, width = 200, height }) {
+
+  async addImage({ path, x = 50, y = this.doc.y, width = 200, height , block = true }) {
     try {
       let imageSource = path;
+  
       if (path.startsWith('http')) {
         const response = await axios.get(path, { responseType: 'arraybuffer' });
         imageSource = Buffer.from(response.data, 'binary');
       }
-      this.doc.image(imageSource, x, y, { width, height });
-      this.doc.moveDown();
+  
+      if (block) {
+        this.doc.image(imageSource, x, y, { width, height });
+        this.doc.moveDown(2);
+      } else {
+        this.doc.image(imageSource, x, y, { width, height });
+      }
     } catch (error) {
       console.error('Error handling image:', error.message);
     }
   };
 
-  // دالة لإضافة رسم بياني
+
   async addChart({ data, options = {} }) {
     const chartImageBuffer = await createChart(data, options);
 
@@ -495,7 +501,7 @@ class PDFBuilder {
     this.doc.moveDown();
   }
 
-  // دالة لحفظ الـ PDF
+
   save() {
     this.doc.end();
   }

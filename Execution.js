@@ -82,7 +82,7 @@ async function createPDF() {
   const content = [
     { type: 'h1', text: 'مرحبا بك في PDF Kit' },
     { type: 'paragraph', text: 'هذه فقرة تجريبية.' },
-    { type: 'image', path: './test.png', width: 100 },
+    { type: 'image', path: './test.png', width: 100 ,block: true,},
     // { 
     //   type: 'chart', 
     //   data: [
